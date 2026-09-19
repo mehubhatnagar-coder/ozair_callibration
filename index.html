@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Oz-Air Ozone Monitor Calibration</title>
+  <meta name="description" content="Creative Oz-Air Dissolved Ozone Monitor ORP Sensor Calibration & Calculation Engine." />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand-title">
+      <div class="brand-logo-container">
+        <img src="/logo.png" alt="Creative Oz-Air Logo" class="brand-logo-img" />
+      </div>
+      <div class="brand-text">
+        <h1>Creative Oz-Air</h1>
+        <p>Ozone Monitor Calibration & Calculation System</p>
+      </div>
+    </div>
+    <div class="header-badges">
+      <span class="tech-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+        Linear Calibration
+      </span>
+      <span class="tech-badge">ORP mV &rarr; O₃ ppm</span>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <main class="main-container">
+
+    <!-- Control Panel -->
+    <aside class="glass-card">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Calibration Setup
+      </h2>
+
+      <!-- Presets -->
+      <div class="preset-selector">
+        <label for="presetSelect">Load Water Profile Preset</label>
+        <select id="presetSelect" class="custom-select">
+          <option value="">-- Select Standard Preset --</option>
+        </select>
+      </div>
+
+      <!-- Point 1: Zero Calibration -->
+      <div class="input-section-header">1. Zero Calibration Point</div>
+      <div class="field-grid">
+        <div class="field-group">
+          <label for="zeroMv">Zero ORP (mV)</label>
+          <div class="input-wrapper">
+            <input type="number" id="zeroMv" value="400" step="1" id="zeroMvInput" />
+            <span class="input-unit">mV</span>
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="zeroPpm">Baseline O₃ Concentration</label>
+          <div class="input-wrapper">
+            <input type="number" id="zeroPpm" value="0.00" readonly style="opacity: 0.7; cursor: not-allowed;" />
+            <span class="input-unit">ppm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Point 2: Gain Calibration -->
+      <div class="input-section-header">2. Gain Calibration Point</div>
+      <div class="field-grid">
+        <div class="field-group">
+          <label for="gainMv">Gain ORP (mV)</label>
+          <div class="input-wrapper">
+            <input type="number" id="gainMv" value="750" step="1" />
+            <span class="input-unit">mV</span>
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="gainPpm">Known Standard O₃</label>
+          <div class="input-wrapper">
+            <input type="number" id="gainPpm" value="1.00" step="0.01" min="0.01" />
+            <span class="input-unit">ppm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Sensor Simulation -->
+      <div class="input-section-header">3. Live ORP Measurement</div>
+      <div class="live-sensor-box">
+        <div class="field-group">
+          <label for="currentMv">Current Sensor Reading (mV)</label>
+          <div class="input-wrapper">
+            <input type="number" id="currentMv" value="575" step="1" />
+            <span class="input-unit">mV</span>
+          </div>
+        </div>
+
+        <div class="slider-container">
+          <input type="range" id="orpSlider" class="range-slider" min="200" max="950" value="575" step="1" />
+          <div class="slider-quick-buttons">
+            <button class="btn-chip" data-delta="-50">-50 mV</button>
+            <button class="btn-chip" data-delta="-10">-10 mV</button>
+            <button class="btn-chip" data-set="zero">Set Zero</button>
+            <button class="btn-chip" data-set="gain">Set Gain</button>
+            <button class="btn-chip" data-delta="+10">+10 mV</button>
+            <button class="btn-chip" data-delta="+50">+50 mV</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Results & Visualization Dashboard -->
+    <section class="dashboard-grid">
+
+      <!-- Hero Output Card -->
+      <article class="glass-card results-hero-card">
+        <div class="result-metric-display">
+          <span class="metric-label">Calculated Dissolved Ozone</span>
+          <div class="metric-value-huge">
+            <span id="displayOzonePpm">0.500</span>
+            <span class="metric-unit">ppm</span>
+          </div>
+          <div id="statusBadge" class="status-badge badge-green">
+            <span class="status-dot"></span>
+            <span id="statusLevelText">Optimal Treatment</span>
+          </div>
+        </div>
+
+        <div class="gauge-bar-wrapper">
+          <span class="metric-label">Safety & Treatment Bar Gauge</span>
+          <div class="gauge-track">
+            <div id="gaugeFill" class="gauge-fill" style="width: 25%; background-color: #10b981;"></div>
+          </div>
+          <div class="gauge-markers">
+            <span>0.0</span>
+            <span>0.2 (Min)</span>
+            <span>0.8 (Optimal)</span>
+            <span>1.5 (High)</span>
+            <span>2.0+ ppm</span>
+          </div>
+          <p id="statusDescription" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">
+            Standard target range for water disinfection & viral inactivation.
+          </p>
+        </div>
+      </article>
+
+      <!-- SVG Chart Card -->
+      <article class="glass-card">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+          Interactive Calibration Curve & Live Sensor Position
+        </h2>
+        <div id="chartContainer" class="chart-card-container">
+          <!-- SVG chart rendered via JS -->
+        </div>
+      </article>
+
+      <!-- Diagnostics Parameters Card -->
+      <article class="glass-card">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Calibration Coefficients & Equation
+        </h2>
+
+        <div class="diagnostics-grid">
+          <div class="diag-card">
+            <div class="diag-title">Sensor Slope (m)</div>
+            <div id="diagSlope" class="diag-value">0.002857 ppm/mV</div>
+          </div>
+          <div class="diag-card">
+            <div class="diag-title">Sensor Sensitivity</div>
+            <div id="diagSensitivity" class="diag-value">350.0 mV/ppm</div>
+          </div>
+          <div class="diag-card">
+            <div class="diag-title">Span ORP (&Delta;mV)</div>
+            <div id="diagDeltaMv" class="diag-value">350 mV</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-cyan);" id="diagFormula">
+          O₃ (ppm) = (ORP - 400.0) &times; 0.002857
+        </div>
+
+        <div class="action-toolbar">
+          <button id="btnSaveLog" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Calibration Snapshot
+          </button>
+          <button id="btnCopyEquation" class="btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Calibration Params
+          </button>
+        </div>
+      </article>
+
+      <!-- History Table Card -->
+      <article class="glass-card">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+          Calibration History & Logs
+        </h2>
+        <div class="history-table-wrapper">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Zero Point</th>
+                <th>Gain Point</th>
+                <th>Slope (ppm/mV)</th>
+                <th>Current ORP</th>
+                <th>Calculated O₃</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-dim); padding: 20px;">
+                  No calibration snapshots recorded yet. Click "Save Calibration Snapshot" above.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="toast-notification">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span id="toastMessage">Action completed successfully.</span>
+  </div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
